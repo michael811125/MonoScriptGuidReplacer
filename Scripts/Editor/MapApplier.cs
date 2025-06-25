@@ -162,12 +162,12 @@ namespace MonoScriptGuidReplacer.Editor
 
             AssetDatabase.Refresh();
 
-            Debug.Log($"🚀 Total replaced {total} m_Script references");
+            Debug.Log($"Total replaced {total} m_Script references");
             var strBuilder = new StringBuilder();
             foreach (var replaceFileName in _replacedFileNames)
                 strBuilder.Append($"{replaceFileName}\n");
             if (strBuilder.Length > 0)
-                Debug.Log(strBuilder.ToString());
+                Debug.Log($"Replaced objects:\n{strBuilder}");
         }
 
         private static int _ProcessTextFile(string assetPath, ScriptMapEntry[] oldMaps, ScriptMapEntry[] newMaps)

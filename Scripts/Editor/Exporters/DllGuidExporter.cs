@@ -81,7 +81,7 @@ namespace MonoScriptGuidReplacer.Editor
             // 使用者按了 Cancel 會拿到空字串
             if (string.IsNullOrEmpty(savePath))
             {
-                Debug.LogWarning("❎ Save canceled.");
+                Debug.LogWarning("Save canceled.");
                 return;
             }
 
@@ -89,7 +89,7 @@ namespace MonoScriptGuidReplacer.Editor
             File.WriteAllText(savePath, json);
             AssetDatabase.Refresh();
 
-            Debug.Log($"✅ Export complete: {list.Length} script entries written to {savePath}");
+            Debug.Log($"Export complete: {list.Length} script entries written to {savePath}");
         }
     }
 }
