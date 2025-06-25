@@ -4,7 +4,7 @@
 
 ## 工具介紹
 
-不管專案原本使用 MonoScript Source Code 掛載組件，又或者使用 DLL 掛載組件，都可以生成 MonoScript Source Code 與 DLL 的 GUID 映射表，再透過 GUID 映射表進行 .prefab 或 .unity 組件 GUID 的替換。
+不管專案原本使用 MonoScript Source Code 掛載組件，又或者使用 DLL 掛載組件，都可以生成 MonoScript Source Code 與 DLL 的 GUID 映射表，再透過 GUID 映射表進行 `.prefab` 或 `.unity` 組件 GUID 的替換。
 
 ### 安裝說明
 
