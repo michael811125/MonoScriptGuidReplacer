@@ -19,15 +19,15 @@
 ![](Docs/img_01.png)
 
 - 輸出 MonoScript Source Code GUID 映射表
-  ![](Docs/img_02.png)
+  - ![](Docs/img_02.png)
   
 - 輸出 DLL GUID 映射表
-  ![](Docs/img_03.png)
-  
+  - ![](Docs/img_03.png)
+
 - 開始替換
-  ![](Docs/img_04.png)
-  ![](Docs/img_05.png)
-  
+  - ![](Docs/img_04.png)
+  - ![](Docs/img_05.png)
+  -
   | 原本使用 MonoScript | 移除 MonoScript (遺失) | 替換使用成 DLL |
   | :-: | :-: | :-: |
   | ![](Docs/img_06.png) | ![](Docs/img_07.png) | ![](Docs/img_08.png) |
