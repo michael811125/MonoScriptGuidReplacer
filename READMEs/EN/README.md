@@ -12,21 +12,21 @@ Whether your project originally used MonoScript source code–attached component
 
 Right-click → Menu → **MonoScript GUID Replacer**
 
-![](Docs/img_01.png)
+![](../../Docs/img_01.png)
 
 - Export MonoScript Source Code GUID Mapping Table  
-  - ![](Docs/img_02.png)
+  - ![](../../Docs/img_02.png)
   
 - Export DLL GUID Mapping Table  
-  - ![](Docs/img_03.png)
+  - ![](../../Docs/img_03.png)
   
 - Start Replacement  
-  - ![](Docs/img_04.png)  
-  - ![](Docs/img_05.png)
+  - ![](../../Docs/img_04.png)  
+  - ![](../../Docs/img_05.png)
   -
   | Originally Using MonoScript | MonoScript Removed (Missing) | Replaced with DLL |
   | :-: | :-: | :-: |
-  | ![](Docs/img_06.png) | ![](Docs/img_07.png) | ![](Docs/img_08.png) |
+  | ![](../../Docs/img_06.png) | ![](../../Docs/img_07.png) | ![](../../Docs/img_08.png) |
   
 ---
 
