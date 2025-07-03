@@ -115,15 +115,17 @@ namespace MonoScriptGuidReplacer.Editor
                 .Select(AssetDatabase.GUIDToAssetPath)
                 .ToArray();
 
-            // 2. 分出選中的文件夾和選中的非文件夾
+            // 2. 選種文件夾類型
             var folderPaths = allSelectedPaths
                 .Where(path => AssetDatabase.IsValidFolder(path))
                 .ToArray();
 
+            // 3. 選中非文件夾類型
             var directAssetPaths = allSelectedPaths
                 .Where(path =>
                     !AssetDatabase.IsValidFolder(path) &&
-                    (path.EndsWith(".prefab") || path.EndsWith(".unity"))
+                    // 支持文件類型
+                    (path.EndsWith(".prefab") || path.EndsWith(".unity") || path.EndsWith(".asset"))
                 )
                 .ToArray();
 
@@ -139,22 +141,23 @@ namespace MonoScriptGuidReplacer.Editor
                 return;
             }
 
-            // 3. 從選中的文件夾裡過濾類型
+            // 4. 從選中的文件夾裡過濾類型
             var foundInFolders = new List<string>();
             if (folderPaths.Length > 0)
             {
-                var guidsInFolders = AssetDatabase.FindAssets("t:Prefab t:Scene", folderPaths);
+                // 支持文件類型
+                var guidsInFolders = AssetDatabase.FindAssets("t:Prefab t:Scene t:ScriptableObject", folderPaths);
                 foundInFolders = guidsInFolders
                     .Select(AssetDatabase.GUIDToAssetPath)
                     .ToList();
             }
 
-            // 4. 合併選擇路徑
+            // 5. 合併選擇路徑
             var targets = foundInFolders
                 .Concat(directAssetPaths)
                 .Distinct();
 
-            // 5. 處理每一個文件
+            // 6. 處理每一個文件
             foreach (var path in targets)
             {
                 total += _ProcessTextFile(path, oldWrapper.items, newWrapper.items);
