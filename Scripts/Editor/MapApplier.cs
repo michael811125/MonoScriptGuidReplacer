@@ -115,7 +115,7 @@ namespace MonoScriptGuidReplacer.Editor
                 .Select(AssetDatabase.GUIDToAssetPath)
                 .ToArray();
 
-            // 2. 選種文件夾類型
+            // 2. 選中文件夾類型
             var folderPaths = allSelectedPaths
                 .Where(path => AssetDatabase.IsValidFolder(path))
                 .ToArray();
@@ -145,10 +145,13 @@ namespace MonoScriptGuidReplacer.Editor
             var foundInFolders = new List<string>();
             if (folderPaths.Length > 0)
             {
-                // 支持文件類型
-                var guidsInFolders = AssetDatabase.FindAssets("t:Prefab t:Scene t:ScriptableObject", folderPaths);
+                var guidsInFolders = AssetDatabase.FindAssets(string.Empty, folderPaths);
                 foundInFolders = guidsInFolders
                     .Select(AssetDatabase.GUIDToAssetPath)
+                    .Where(path =>
+                    !AssetDatabase.IsValidFolder(path) &&
+                    // 支持文件類型
+                    (path.EndsWith(".prefab") || path.EndsWith(".unity") || path.EndsWith(".asset")))
                     .ToList();
             }
 

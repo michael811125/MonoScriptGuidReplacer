@@ -33,10 +33,10 @@ namespace MonoScriptGuidReplacer.Editor
 
             // 2. 加載 dll
             Assembly asm = Assembly.LoadFrom(dllFullPath);
-            // 3. 找到所有 MonoBehaviour 子類
+            // 3. 找到所有 MonoBehaviour 或 ScriptableObject 子類
             var mbTypes = asm.GetTypes()
-                .Where(t => typeof(MonoBehaviour).IsAssignableFrom(t) && !t.IsAbstract)
-                .ToArray();
+               .Where(t => !t.IsAbstract && (typeof(MonoBehaviour).IsAssignableFrom(t) || typeof(ScriptableObject).IsAssignableFrom(t)))
+               .ToArray();
 
             // 4. 構建映射表
             var list = mbTypes.Select(t =>
@@ -46,14 +46,23 @@ namespace MonoScriptGuidReplacer.Editor
 
                 // 用一個臨時實例獲取 MonoScript 資源
                 // 嘗試通過反射訪問類型並獲取 MonoScript
-                MonoBehaviour dummyInstance = new GameObject("Dummy").AddComponent(t) as MonoBehaviour;
-                if (dummyInstance != null)
+                if (typeof(MonoBehaviour).IsAssignableFrom(t))
                 {
-                    MonoScript monoScript = MonoScript.FromMonoBehaviour(dummyInstance);
-                    // 清理臨時對象
-                    UnityEngine.Object.DestroyImmediate(dummyInstance.gameObject);
-                    // 獲取 GUID 和 fileID
-                    AssetDatabase.TryGetGUIDAndLocalFileIdentifier(monoScript, out guid, out fileID);
+                    // 用臨時 GameObject + Component 取得 MonoScript
+                    var go = new GameObject("Dummy");
+                    var mb = go.AddComponent(t) as MonoBehaviour;
+                    var mono = MonoScript.FromMonoBehaviour(mb);
+                    UnityEngine.Object.DestroyImmediate(go);
+                    AssetDatabase.TryGetGUIDAndLocalFileIdentifier(mono, out guid, out fileID);
+                }
+                // ScriptableObject
+                else
+                {
+                    // 用 CreateInstance 取得 MonoScript
+                    var so = ScriptableObject.CreateInstance(t);
+                    var mono = MonoScript.FromScriptableObject(so);
+                    UnityEngine.Object.DestroyImmediate(so);
+                    AssetDatabase.TryGetGUIDAndLocalFileIdentifier(mono, out guid, out fileID);
                 }
 
                 return new ScriptMapEntry

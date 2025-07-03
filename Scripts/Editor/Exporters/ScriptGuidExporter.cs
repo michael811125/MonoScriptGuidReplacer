@@ -16,14 +16,16 @@ namespace MonoScriptGuidReplacer.Editor
                 .Select(AssetDatabase.GUIDToAssetPath)
                 .ToArray();
 
-            // 2. 分出選中的文件夾和選中的非文件夾
+            // 2. 選中文件夾類型
             var folderPaths = allSelectedPaths
                 .Where(path => AssetDatabase.IsValidFolder(path))
                 .ToArray();
 
+            // 3. 選中非文件夾類型
             var directAssetPaths = allSelectedPaths
                 .Where(path =>
                     !AssetDatabase.IsValidFolder(path) &&
+                    // 支持文件類型
                     (path.EndsWith(".cs"))
                 )
                 .ToArray();
@@ -40,22 +42,23 @@ namespace MonoScriptGuidReplacer.Editor
                 return;
             }
 
-            // 3. 從選中的文件夾裡過濾類型
+            // 4. 從選中的文件夾裡過濾類型
             var foundInFolders = new List<string>();
             if (folderPaths.Length > 0)
             {
-                var guidsInFolders = AssetDatabase.FindAssets("t:MonoScript", folderPaths);
+                // 支持文件類型
+                var guidsInFolders = AssetDatabase.FindAssets("t:MonoScript t:Script", folderPaths);
                 foundInFolders = guidsInFolders
                     .Select(AssetDatabase.GUIDToAssetPath)
                     .ToList();
             }
 
-            // 4. 合併選擇路徑
+            // 5. 合併選擇路徑
             var targets = foundInFolders
                 .Concat(directAssetPaths)
                 .Distinct();
 
-            // 5. 處理每一個文件
+            // 6. 處理每一個文件
             var list = targets
                 .Select(path =>
                 {
@@ -63,8 +66,10 @@ namespace MonoScriptGuidReplacer.Editor
                     var ms = AssetDatabase.LoadAssetAtPath<MonoScript>(path);
                     var type = ms.GetClass();
 
-                    // 過濾不是 MonoBehaviour 的類別
-                    if (type == null || !typeof(MonoBehaviour).IsAssignableFrom(type))
+                    // 過濾類別
+                    if (type == null ||
+                        // 如果不是 MonoBehaviour 也不是 ScriptableObject 就過濾掉
+                        !(typeof(MonoBehaviour).IsAssignableFrom(type) || typeof(ScriptableObject).IsAssignableFrom(type)))
                         return null;
 
                     AssetDatabase.TryGetGUIDAndLocalFileIdentifier(ms, out string assetGuid, out long fileId);
@@ -79,11 +84,11 @@ namespace MonoScriptGuidReplacer.Editor
                 .Where(info => info != null)
                 .ToArray();
 
-            // 4. 寫入 JSON
+            // 7. 寫入 JSON
             var wrapper = new Wrapper { items = list };
             string json = JsonUtility.ToJson(wrapper, true);
 
-            // 5. 讓使用者在專案內選擇儲存位置和檔名
+            // 8. 讓使用者在專案內選擇儲存位置和檔名
             string defaultFileName = "mono_source_code_guid_map.json";
             string savePath = EditorUtility.SaveFilePanelInProject
             (
@@ -100,7 +105,7 @@ namespace MonoScriptGuidReplacer.Editor
                 return;
             }
 
-            // 6. 寫入並更新 AssetDatabase
+            // 9. 寫入並更新 AssetDatabase
             File.WriteAllText(savePath, json);
             AssetDatabase.Refresh();
 
